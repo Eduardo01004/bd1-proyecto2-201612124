@@ -23,3 +23,20 @@ El ICE solicita que realice un documento de análisis que le permita determinar
 
 ## Modelo Relacional
   ![imagen0](Relational_1.png)
+
+## Requisitos para Normalizar 
+  - No pueden haber dos filas iguales
+  - No se permiten duplicados
+  - Todos los datos de una columna tienen que ser del mismo tipo 
+  - Cada tabla debe de tener su nombre unico
+ 
+# Primera Regla de Normalizacion (1FN)
+  - Todos los atributos, valores almacenados en las columnas deben de ser indivisibles
+  - No deben exisitir grupos de valores repetidos
+  
+  En el caso del CSV los datos son indivisibles ya que no se pueden separar o dividir los datos y en este Caso las Columnas RAZA y SEXO se repetian por lo tanto se eliminan
+  Por lo tanto el archivo de carga esta en la primera forma normalizada.
+  
+ # Segunda Regla de Normalizacion (2FN)
+  - En esta regla se verifica que no existan dependencias funcionales parciales. Esto quiere decir que todos los valores de las columnas de una fila deben depender de la clave 
+    primaria que le corresponde.
