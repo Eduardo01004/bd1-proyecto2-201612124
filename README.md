@@ -25,7 +25,7 @@ El ICE solicita que realice un documento de análisis que le permita determinar
 
 ## Listado de Entidades
 
-![imagen0](imagenes/img4.png)
+![imagen0](imagenes/img4.PNG)
 
 # Listado de Atributos
 
@@ -131,7 +131,7 @@ El ICE solicita que realice un documento de análisis que le permita determinar
   En el caso del CSV los datos son indivisibles ya que no se pueden separar o dividir los datos y en este Caso las Columnas RAZA y SEXO se repetian por lo tanto se eliminan
   Por lo tanto el archivo de carga esta en la primera forma normalizada quedaria de la forma siguiente.
 
-  <img src="imagenes/img1.png" width=800px> 
+  <img src="imagenes/img1.PNG" width=800px> 
 
  # Segunda Regla de Normalizacion (2FN)
   - En esta regla se verifica que no existan dependencias funcionales parciales. Esto quiere decir que todos los valores de las columnas de una fila deben depender de la clave 
@@ -139,7 +139,7 @@ El ICE solicita que realice un documento de análisis que le permita determinar
 
   En este proyecto se aplico la segunda regla a las tablas que no dependen de una tabla unica Como se muestra A continuacion.
 
-  <img src="imagenes/img2.png" width=800px> 
+  <img src="imagenes/img2.PNG" width=800px> 
 
  # Tercera Regla de Normalizacion (2FN)
   - En la Tercera forma normal se indica que no deben existir dependencias transitivas entre las columnas de una tabla. esto significa que las comlumnas que no forman parte de la clave primaria deben de depender solo de la clave,nunca de otra columna no clave.
@@ -147,7 +147,7 @@ El ICE solicita que realice un documento de análisis que le permita determinar
   En este Caso la Tabla Detalle_Eleccion tiene dos atributos que son Sexo y Raza que no depende de la clave primaria de esta
   Entonces se procede a separara estos dos atributos y se agregan dos tablas nuevas que son las siguientes
 
-  <img src="imagenes/img2.png" width=800px> 
+  <img src="imagenes/img3.PNG" width=800px> 
 
 
 
