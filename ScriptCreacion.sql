@@ -108,6 +108,8 @@ Create Table Detalle_Eleccion(
 );
 select *from Detalle_Eleccion;
 
+drop table detalle_eleccion;
+
 
 
 

@@ -88,8 +88,71 @@ inner join
 						where upper(genero.tipo) = 'MUJERES'
                         group by pais.nombre,departamento.nombre) as C2
                         on C1.pais = C2.pais;
-                        
+					
+
 /*----------------Consulta 3------------------*/
+SELECT TOTAL.PAIS, PART.PARTIDO, TOTAL.CANTIDAD FROM (SELECT TOT.PAIS AS PAIS, MAX(CANTIDAD) AS CANTIDAD FROM (
+SELECT RA.PAIS, RA.PARTIDO, COUNT(RA.MUNA) AS CANTIDAD FROM
+(select UNO.PAIS AS PAIS, UNO.PARTIDO AS PARTIDO, UNO.IDMUN AS MUNA, DOS.VOTOS 
+from (SELECT PA.nombre AS PAIS, PAR.nombre AS PARTIDO, MU.ID_MUNICIPIO AS IDMUN ,SUM(E.analfabetas + E.alfabetas)  AS VOTOS 
+FROM detalle_eleccion E, MUNICIPIO MU, DEPARTAMENTO DE, REGION RE, PAIS PA, PARTIDO PAR,eleccion 
+WHERE E.id_municipio = MU.id_municipio
+AND MU.id_departamento= DE.id_departamento
+AND DE.id_region = RE.id_region
+AND RE.id_pais = PA.id_pais
+AND E.id_partido = PAR.id_partido
+and E.id_eleccion = eleccion.id_eleccion
+GROUP BY PA.nombre, PAR.nombre, MU.id_municipio
+ORDER BY PA.nombre, PAR.nombre, MU.id_municipio) UNO, /*--*/
+
+(SELECT UN.PAIS AS PAIS, UN.MUN AS IDMUN , MAX(UN.VOTOS) AS VOTOS FROM
+(SELECT PA.nombre AS PAIS, PAR.nombre AS PARTIDO, MU.id_municipio AS MUN, MU.nombre ,SUM(E.analfabetas + E.alfabetas) AS VOTOS 
+FROM detalle_eleccion E, MUNICIPIO MU, DEPARTAMENTO DE, REGION RE, PAIS PA, PARTIDO PAR,eleccion 
+WHERE E.id_municipio = MU.id_municipio
+AND MU.id_departamento= DE.id_departamento
+AND DE.id_region = RE.id_region
+AND RE.id_pais = PA.id_pais
+AND E.id_partido = PAR.id_partido
+and E.id_eleccion = eleccion.id_eleccion
+GROUP BY PA.nombre, PAR.nombre, MU.id_municipio, MU.nombre
+ORDER BY PA.nombre,  MU.id_municipio) UN 
+group by UN.PAIS,  UN.MUN order by un.mun) DOS
+WHERE UNO.PAIS = DOS.PAIS
+AND UNO.IDMUN = DOS.IDMUN
+AND UNO.VOTOS = DOS.VOTOS
+ORDER BY UNO.IDMUN) RA group by RA.PAIS, RA.PARTIDO) TOT group by TOT.PAIS) TOTAL, 
+
+(SELECT RA.PAIS, RA.PARTIDO, COUNT(RA.MUNA) AS CANTIDAD FROM
+(select UNO.PAIS AS PAIS, UNO.PARTIDO AS PARTIDO, UNO.IDMUN AS MUNA, DOS.VOTOS 
+from (SELECT PA.nombre AS PAIS, PAR.nombre AS PARTIDO, MU.id_municipio AS IDMUN ,SUM(E.alfabetas+ E.analfabetas)  AS VOTOS 
+FROM detalle_eleccion E, MUNICIPIO MU, DEPARTAMENTO DE, REGION RE, PAIS PA, PARTIDO PAR,eleccion 
+WHERE E.id_municipio = MU.id_municipio
+AND MU.id_departamento= DE.id_departamento
+AND DE.id_region = RE.id_region
+AND RE.id_pais = PA.id_pais
+AND E.id_partido = PAR.id_partido
+and E.id_eleccion = eleccion.id_eleccion
+GROUP BY PA.nombre, PAR.nombre, MU.id_municipio
+ORDER BY PA.nombre,  MU.id_municipio) UNO, 
+(SELECT UN.PAIS AS PAIS, UN.MUN AS IDMUN , MAX(UN.VOTOS) AS VOTOS FROM
+(SELECT PA.nombre AS PAIS, PAR.nombre AS PARTIDO, MU.id_municipio AS MUN, MU.nombre ,SUM(E.alfabetas+ E.analfabetas)  AS VOTOS 
+FROM detalle_eleccion E, MUNICIPIO MU, DEPARTAMENTO DE, REGION RE, PAIS PA, PARTIDO PAR,eleccion 
+WHERE E.id_municipio = MU.id_municipio
+AND MU.id_departamento= DE.id_departamento
+AND DE.id_region = RE.id_region
+AND RE.id_pais = PA.id_pais
+AND E.id_partido = PAR.id_partido
+and E.id_eleccion = eleccion.id_eleccion
+GROUP BY PA.nombre, PAR.nombre, MU.id_municipio, MU.nombre
+ORDER BY PA.nombre,  MU.id_municipio) UN 
+group by UN.PAIS,  UN.MUN order by un.mun) DOS
+WHERE UNO.PAIS = DOS.PAIS
+AND UNO.IDMUN = DOS.IDMUN
+AND UNO.VOTOS = DOS.VOTOS
+ORDER BY UNO.IDMUN) RA group by RA.PAIS, RA.PARTIDO) PART
+WHERE TOTAL.PAIS = PART.PAIS
+AND TOTAL.CANTIDAD = PART.CANTIDAD;
+
 
 
 /*----------------Consulta 4 -----------------*/
@@ -120,16 +183,17 @@ select C2.pais, C2.region, C2.raza,round(C2.total_votos/2,0)
     and C2.raza = 'INDIGENAS'; 
 						
 /*----------consulta 5 dudosa ---------*/
-select C1.pais,C1.departamento,C1.municipio,C1.primaria * 0.25 as primaria,C1.medio * 0.30 as medio,C1.universitario from(
-	select pais.nombre as pais, departamento.nombre as departamento,municipio.nombre as municipio,sum(detalle_eleccion.primaria) as primaria,sum(detalle_eleccion.medio) as medio,
-			sum(detalle_eleccion.universitario) as universitario
+select C1.pais,C1.departamento,C1.municipio,C1.primaria * 0.25 as primaria,C1.medio * 0.30 as medio,C1.universitario 
+from(
+	select pais.nombre as pais, departamento.nombre as departamento,municipio.nombre as municipio,detalle_eleccion.primaria as primaria,detalle_eleccion.medio as medio,
+			detalle_eleccion.universitario as universitario
             from detalle_eleccion
 				inner join municipio on detalle_eleccion.id_municipio = municipio.id_municipio
 				inner join departamento on municipio.id_departamento = departamento.id_departamento
 				inner join region on departamento.id_region = region.id_region
 				inner join pais  on region.id_pais = pais.id_pais
                 group by pais,departamento,municipio) as C1
-                where C1.universitario < (C1.medio)
+                where C1.universitario < (C1.medio*0.30)
                 and  C1.universitario > (C1.primaria * 0.25)
                 order by C1.universitario desc;
 
